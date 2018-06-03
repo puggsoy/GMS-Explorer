@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using System.Drawing;
 
 namespace GMS_Explorer
 {
@@ -39,8 +40,17 @@ namespace GMS_Explorer
                 TXTR.Load(br);
                 TXTR.Instance.GetBitmap(0).Save("sheet.png");
 
-                TPAG.Load(br);
-                TPAG.Instance.GetPage(80).Save("page.png");
+                SPRT.Load(br);
+                Sprite spr = SPRT.Instance.GetSprite(477);
+                string name = spr.Name;
+                Bitmap[] bitmaps = spr.GetFrames();
+
+                for (int i = 0; i < bitmaps.Length; i++)
+                {
+                    string outDir = "./" + name;
+                    Directory.CreateDirectory(outDir);
+                    bitmaps[i].Save(string.Format("{0}/{1}_{2}.png", outDir, name, i));
+                }
             }
 
             fs.Close();

@@ -41,8 +41,11 @@ namespace GMS_Explorer
         {
             Bitmap source = TXTR.Instance.GetBitmap(sheetID);
             Bitmap dest = new Bitmap(boundingBox.Width, boundingBox.Height);
-            Graphics g = Graphics.FromImage(dest);
-            g.DrawImage(source, renderX, renderY, sourceRect, GraphicsUnit.Pixel);
+
+            using (Graphics g = Graphics.FromImage(dest))
+            {
+                g.DrawImage(source, renderX, renderY, sourceRect, GraphicsUnit.Pixel);
+            }
 
             return dest;
         }

@@ -8,28 +8,28 @@ using System.Threading.Tasks;
 
 namespace GMS_Explorer
 {
-    class TPAG : ListChunk<TexturePage>
+    class SPRT : ListChunk<Sprite>
     {
         public static void Load(BinaryReader br)
         {
             Instance = null;
 
-            long chunkOffset = br.FindChunk("TPAG");
+            long chunkOffset = br.FindChunk("SPRT");
             br.Jump(chunkOffset);
 
-            Instance = new TPAG();
+            Instance = new SPRT();
             Instance.LoadData(br);
 
             br.JumpBack();
         }
 
-        public static TPAG Instance { get; private set; }
+        public static SPRT Instance { get; private set; }
 
-        private TPAG() {}
+        private SPRT() {}
 
-        public Bitmap GetPage(int index)
+        public Sprite GetSprite(int index)
         {
-            return m_contents[index].GetPage();
+            return m_contents[index];
         }
     }
 }
