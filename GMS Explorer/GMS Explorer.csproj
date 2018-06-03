@@ -55,8 +55,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ChunkItems\Background.cs" />
     <Compile Include="ChunkItems\Sprite.cs" />
     <Compile Include="ChunkItems\TexturePage.cs" />
+    <Compile Include="Chunks\BGND.cs" />
     <Compile Include="Chunks\GEN8.cs" />
     <Compile Include="Chunks\SPRT.cs" />
     <Compile Include="IChunkItem.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,9 +12,9 @@ namespace GMS_Explorer
     {
         protected List<T> m_contents;
 
-        public ListChunk()
-        {
-        }
+        public List<T> Contents { get { return m_contents; } }
+
+        public ListChunk() {}
 
         protected override void LoadData(BinaryReader br)
         {

@@ -10,7 +10,7 @@ namespace GMS_Explorer
 {
     class Sprite : IChunkItem
     {
-        private string name;
+        public string Name { get; private set; }
         private UInt32 width;
         private UInt32 height;
         private Rectangle box;
@@ -18,17 +18,13 @@ namespace GMS_Explorer
         private UInt32 sepMasks;
         private UInt32 originX;
         private UInt32 originY;
-        private TexturePage[] texturePages;
-
-        public string Name { get { return name; } }
-
-        public TexturePage[] TexturePages { get { return texturePages; } }
+        public TexturePage[] texturePages;
 
         public void Load(BinaryReader br, UInt32 address)
         {
             br.Jump(address);
 
-            name = br.ReadStringFromOffset();
+            Name = br.ReadStringFromOffset();
             width = br.ReadUInt32();
             height = br.ReadUInt32();
             box = new Rectangle();

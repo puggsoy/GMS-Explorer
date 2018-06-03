@@ -51,6 +51,16 @@ namespace GMS_Explorer
                     Directory.CreateDirectory(outDir);
                     bitmaps[i].Save(string.Format("{0}/{1}_{2}.png", outDir, name, i));
                 }
+
+                BGND.Load(br);
+                List<Background> bgs = BGND.Instance.Contents;
+                
+                foreach (Background b in bgs)
+                {
+                    string outDir = "./bgs";
+                    Directory.CreateDirectory(outDir);
+                    b.GetBitmap().Save(string.Format("{0}/{1}.png", outDir, b.Name));
+                }
             }
 
             fs.Close();
