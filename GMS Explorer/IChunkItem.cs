@@ -7,7 +7,7 @@ using System.IO;
 
 namespace GMS_Explorer
 {
-    interface IChunkItem
+    public interface IChunkItem
     {
         void Load(BinaryReader br, UInt32 address);
     }
