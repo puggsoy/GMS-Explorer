@@ -29,6 +29,9 @@ namespace GMS_Explorer
         public ObservableCollection<AssetItem> SpriteList { get; set; }
         public ObservableCollection<AssetItem> BackgroundList { get; set; }
 
+        private AssetItem currentSelection = null;
+        private int currentSpriteFrame = 0;
+
         public MainWindow()
         {
             SpriteList = new ObservableCollection<AssetItem>();
@@ -109,6 +112,8 @@ namespace GMS_Explorer
 
         private void SpriteListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            currentSpriteFrame = 0;
+
             RefreshSelection();
         }
 
@@ -117,25 +122,67 @@ namespace GMS_Explorer
             RefreshSelection();
         }
 
+        private void ListTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            RefreshSelection();
+        }
+
         private void RefreshSelection()
         {
-            AssetItem ai = null;
-            Bitmap bmp = null;
-
             switch(ListTabControl.SelectedIndex)
             {
                 case 0:
-                    ai = (AssetItem)SpriteListBox.SelectedItem;
-                    Sprite sprite = (Sprite)ai.Asset;
-                    bmp = sprite.GetFrames()[0];
+                    currentSelection = (AssetItem)SpriteListBox.SelectedItem;
+                    PopulateSprite();
                     break;
                 case 1:
-                    ai = (AssetItem)BackgroundListBox.SelectedItem;
-                    Background background = (Background)ai.Asset;
-                    bmp = background.GetBitmap();
+                    currentSelection = (AssetItem)BackgroundListBox.SelectedItem;
                     break;
             }
+        }
 
+        private void PrevBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeFrame(-1);
+        }
+
+        private void NextBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeFrame(1);
+        }
+
+        private void ChangeFrame(int amount)
+        {
+            if (currentSelection != null && currentSelection.Asset.GetType() == typeof(Sprite))
+            {
+                Sprite sprite = (Sprite)currentSelection.Asset;
+                currentSpriteFrame += amount;
+
+                while (currentSpriteFrame < 0)
+                {
+                    currentSpriteFrame += sprite.FrameNum;
+                }
+
+                currentSpriteFrame %= sprite.FrameNum;
+
+                PopulateSprite();
+            }
+        }
+
+        private void PopulateSprite()
+        {
+            if (currentSelection == null)
+                return;
+
+            Sprite sprite = (Sprite)currentSelection.Asset;
+            ApplyBmp(sprite.GetFrame(currentSpriteFrame));
+
+            ControlPanel.Visibility = Visibility.Visible;
+            FrameLabel.Content = string.Format("Frame {0}/{1}", currentSpriteFrame + 1, sprite.FrameNum);
+        }
+
+        private void ApplyBmp(Bitmap bmp)
+        {
             using (MemoryStream mem = new MemoryStream())
             {
                 bmp.Save(mem, ImageFormat.Png);

@@ -107,6 +107,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\play_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\next_icon.png" />
+    <Resource Include="Images\prev_icon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

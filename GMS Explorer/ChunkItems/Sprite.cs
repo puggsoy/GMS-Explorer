@@ -20,6 +20,8 @@ namespace GMS_Explorer
         private UInt32 originY;
         public TexturePage[] texturePages;
 
+        public int FrameNum { get { return texturePages.Length; } }
+
         public void Load(BinaryReader br, UInt32 address)
         {
             br.Jump(address);
@@ -66,6 +68,11 @@ namespace GMS_Explorer
             }
 
             return bitmaps;
+        }
+
+        public Bitmap GetFrame(int index)
+        {
+            return texturePages[index].GetPage();
         }
     }
 }
