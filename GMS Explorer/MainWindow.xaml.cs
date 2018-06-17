@@ -17,6 +17,7 @@ using System.Drawing;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing.Imaging;
+using Microsoft.Win32;
 
 namespace GMS_Explorer
 {
@@ -25,54 +26,119 @@ namespace GMS_Explorer
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ObservableCollection<AssetItem> ItemList { get; set; }
+        public ObservableCollection<AssetItem> SpriteList { get; set; }
+        public ObservableCollection<AssetItem> BackgroundList { get; set; }
 
         public MainWindow()
         {
-            ItemList = new ObservableCollection<AssetItem>();
+            SpriteList = new ObservableCollection<AssetItem>();
+            BackgroundList = new ObservableCollection<AssetItem>();
 
             InitializeComponent();
-
-            Test();
         }
 
-        private void Test()
+        private void OpenFile(object sender, RoutedEventArgs e)
         {
-            FileStream fs = new FileStream("./ror_data.win", FileMode.Open, FileAccess.Read);
+            Console.WriteLine("FOO");
+
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                Title = "Select data.win to open",
+                CheckPathExists = true,
+                CheckFileExists = true,
+                Filter = "Game Maker .win files|*.win",
+                FilterIndex = 0,
+                Multiselect = false
+            };
+
+            Stream fs = null;
+
+            if (dialog.ShowDialog() == true)
+            {
+                fs = dialog.OpenFile();
+            }
 
             using (BinaryReader br = new BinaryReader(fs))
             {
                 GEN8.Load(br);
-                GEN8 g = GEN8.Instance;
-                Console.WriteLine(string.Format("Filename: {0}\nName: {1}\nDisplayName: {2}\nSteamAppID: {3}", g.Filename, g.Name, g.DisplayName, g.SteamAppID));
+                //GEN8 g = GEN8.Instance;
+                //Console.WriteLine(string.Format("Filename: {0}\nName: {1}\nDisplayName: {2}\nSteamAppID: {3}", g.Filename, g.Name, g.DisplayName, g.SteamAppID));
 
                 TXTR.Load(br);
-
                 SPRT.Load(br);
-                List<Sprite> sprites = SPRT.Instance.Contents;
-                ItemList.Clear();
-
-                for (int i = 0; i < sprites.Count; i++)
-                {
-                    AssetItem ai = new AssetItem(sprites[i].Name, sprites[i]);
-                    ItemList.Add(ai);
-                }
+                BGND.Load(br);
             }
+
+            List<Sprite> sprites = SPRT.Instance.Contents;
+            SpriteList.Clear();
+
+            for (int i = 0; i < sprites.Count; i++)
+            {
+                Sprite spr = sprites[i];
+                if (spr.GetFrames().Length < 1)
+                    continue;
+
+                AssetItem ai = new AssetItem(spr.Name, spr);
+                SpriteList.Add(ai);
+            }
+
+            List<Background> backgrounds = BGND.Instance.Contents;
+            BackgroundList.Clear();
+
+            for (int i = 0; i < backgrounds.Count; i++)
+            {
+                AssetItem ai = new AssetItem(backgrounds[i].Name, backgrounds[i]);
+                BackgroundList.Add(ai);
+            }
+
+            GEN8 g = GEN8.Instance;
+            GameInfoText.Inlines.Clear();
+            GameInfoText.Inlines.Add(new Bold(new Run("Name: ")));
+            GameInfoText.Inlines.Add(new Run(g.DisplayName + "\n"));
+            GameInfoText.Inlines.Add(new Bold(new Run("Development Name: ")));
+            GameInfoText.Inlines.Add(new Run(g.Name + "\n"));
+            GameInfoText.Inlines.Add(new Bold(new Run("Version: ")));
+            GameInfoText.Inlines.Add(new Run(string.Format("{0}.{1}\n", g.MajorVersion, g.MinorVersion)));
+            GameInfoText.Inlines.Add(new Bold(new Run("Build Version: ")));
+            GameInfoText.Inlines.Add(new Run(g.BuildVersion + "\n"));
+            GameInfoText.Inlines.Add(new Bold(new Run("Release Version: ")));
+            GameInfoText.Inlines.Add(new Run(g.ReleaseVersion + "\n"));
 
             fs.Close();
         }
 
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void SpriteListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            AssetItem ai = (AssetItem)e.AddedItems[0];
-            Console.WriteLine(ai.Name);
+            RefreshSelection();
+        }
 
-            Sprite sprite = (Sprite)ai.Asset;
-            Bitmap bmp = sprite.GetFrames()[0];
+        private void BackgroundListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            RefreshSelection();
+        }
+
+        private void RefreshSelection()
+        {
+            AssetItem ai = null;
+            Bitmap bmp = null;
+
+            switch(ListTabControl.SelectedIndex)
+            {
+                case 0:
+                    ai = (AssetItem)SpriteListBox.SelectedItem;
+                    Sprite sprite = (Sprite)ai.Asset;
+                    bmp = sprite.GetFrames()[0];
+                    break;
+                case 1:
+                    ai = (AssetItem)BackgroundListBox.SelectedItem;
+                    Background background = (Background)ai.Asset;
+                    bmp = background.GetBitmap();
+                    break;
+            }
 
             using (MemoryStream mem = new MemoryStream())
             {
-                bmp.Save(mem, ImageFormat.Bmp);
+                bmp.Save(mem, ImageFormat.Png);
                 mem.Position = 0;
                 BitmapImage bmpImage = new BitmapImage();
                 bmpImage.BeginInit();

@@ -11,8 +11,15 @@
 
     <Window.Resources>
         <CollectionViewSource
-            Source="{Binding Path=ItemList}"
-            x:Key="itemListView">
+            Source="{Binding Path=SpriteList}"
+            x:Key="spriteListView">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Name"/>
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+        <CollectionViewSource
+            Source="{Binding Path=BackgroundList}"
+            x:Key="bgListView">
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="Name"/>
             </CollectionViewSource.SortDescriptions>
@@ -22,7 +29,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_Open"/>
+                <MenuItem Header="_Open" Click="OpenFile"/>
             </MenuItem>
         </Menu>
         <Grid>
@@ -31,9 +38,35 @@
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <ListBox Grid.Column="0" ItemsSource="{Binding Source={StaticResource itemListView}}" DisplayMemberPath="Name" SelectionChanged="ListBox_SelectionChanged"/>
+            <!--Left side-->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TabControl x:Name="ListTabControl" Grid.Row="0">
+                    <TabItem Header="Sprites">
+                        <ListBox x:Name="SpriteListBox" ItemsSource="{Binding Source={StaticResource spriteListView}}" DisplayMemberPath="Name" SelectionChanged="SpriteListBox_SelectionChanged"/>
+                    </TabItem>
+                    <TabItem Header="Backgrounds">
+                        <ListBox x:Name="BackgroundListBox" ItemsSource="{Binding Source={StaticResource bgListView}}" DisplayMemberPath="Name" SelectionChanged="BackgroundListBox_SelectionChanged"/>
+                    </TabItem>
+                </TabControl>
+                <ItemsControl x:Name="GameInfoBox" Grid.Row="1">
+                    <TextBlock x:Name="GameInfoText">
+                        Game info will go here!
+                    </TextBlock>
+                </ItemsControl>
+            </Grid>
+            
+            
+            <!--Splitter-->
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
-            <Image x:Name="MainImage" Grid.Column="2"/>
+            <!--Right side-->
+            <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Image x:Name="MainImage"/>
+            </ScrollViewer>
         </Grid>
     </DockPanel>
 </Window>
