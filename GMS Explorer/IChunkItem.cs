@@ -7,8 +7,8 @@ using System.IO;
 
 namespace GMS_Explorer
 {
-    public interface IChunkItem
-    {
-        void Load(BinaryReader br, UInt32 address);
-    }
+	public interface IChunkItem
+	{
+		void Load(BinaryReader br, UInt32 address);
+	}
 }

@@ -8,28 +8,28 @@ using System.Threading.Tasks;
 
 namespace GMS_Explorer
 {
-    class SPRT : ListChunk<Sprite>
-    {
-        public static void Load(BinaryReader br)
-        {
-            Instance = null;
+	class SPRT : ListChunk<Sprite>
+	{
+		public static void Load(BinaryReader br)
+		{
+			Instance = null;
 
-            long chunkOffset = br.FindChunk("SPRT");
-            br.Jump(chunkOffset);
+			long chunkOffset = br.FindChunk("SPRT");
+			br.Jump(chunkOffset);
 
-            Instance = new SPRT();
-            Instance.LoadData(br);
+			Instance = new SPRT();
+			Instance.LoadData(br);
 
-            br.JumpBack();
-        }
+			br.JumpBack();
+		}
 
-        public static SPRT Instance { get; private set; }
+		public static SPRT Instance { get; private set; }
 
-        private SPRT() {}
+		private SPRT() { }
 
-        public Sprite GetSprite(int index)
-        {
-            return m_contents[index];
-        }
-    }
+		public Sprite GetSprite(int index)
+		{
+			return m_contents[index];
+		}
+	}
 }

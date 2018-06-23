@@ -7,28 +7,28 @@ using System.Threading.Tasks;
 
 namespace GMS_Explorer
 {
-    class BGND : ListChunk<Background>
-    {
-        public static void Load(BinaryReader br)
-        {
-            Instance = null;
+	class BGND : ListChunk<Background>
+	{
+		public static void Load(BinaryReader br)
+		{
+			Instance = null;
 
-            long chunkOffset = br.FindChunk("BGND");
-            br.Jump(chunkOffset);
+			long chunkOffset = br.FindChunk("BGND");
+			br.Jump(chunkOffset);
 
-            Instance = new BGND();
-            Instance.LoadData(br);
+			Instance = new BGND();
+			Instance.LoadData(br);
 
-            br.JumpBack();
-        }
+			br.JumpBack();
+		}
 
-        public static BGND Instance { get; private set; }
+		public static BGND Instance { get; private set; }
 
-        private BGND() {}
+		private BGND() { }
 
-        public Background GetBackground(int index)
-        {
-            return m_contents[index];
-        }
-    }
+		public Background GetBackground(int index)
+		{
+			return m_contents[index];
+		}
+	}
 }

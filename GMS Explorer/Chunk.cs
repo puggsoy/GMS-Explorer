@@ -7,19 +7,17 @@ using System.Threading.Tasks;
 
 namespace GMS_Explorer
 {
-    class Chunk
-    {
-        protected string m_name;
-        protected UInt32 length;
+	class Chunk
+	{
+		protected string m_name;
+		protected UInt32 length;
 
-        public Chunk()
-        {
-        }
+		public Chunk() {}
 
-        protected virtual void LoadData(BinaryReader br)
-        {
-            m_name = br.ReadString(4);
-            length = br.ReadUInt32();
-        }
-    }
+		protected virtual void LoadData(BinaryReader br)
+		{
+			m_name = br.ReadString(4);
+			length = br.ReadUInt32();
+		}
+	}
 }

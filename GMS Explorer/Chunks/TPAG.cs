@@ -8,28 +8,28 @@ using System.Threading.Tasks;
 
 namespace GMS_Explorer
 {
-    class TPAG : ListChunk<TexturePage>
-    {
-        public static void Load(BinaryReader br)
-        {
-            Instance = null;
+	class TPAG : ListChunk<TexturePage>
+	{
+		public static void Load(BinaryReader br)
+		{
+			Instance = null;
 
-            long chunkOffset = br.FindChunk("TPAG");
-            br.Jump(chunkOffset);
+			long chunkOffset = br.FindChunk("TPAG");
+			br.Jump(chunkOffset);
 
-            Instance = new TPAG();
-            Instance.LoadData(br);
+			Instance = new TPAG();
+			Instance.LoadData(br);
 
-            br.JumpBack();
-        }
+			br.JumpBack();
+		}
 
-        public static TPAG Instance { get; private set; }
+		public static TPAG Instance { get; private set; }
 
-        private TPAG() {}
+		private TPAG() { }
 
-        public Bitmap GetPage(int index)
-        {
-            return m_contents[index].GetPage();
-        }
-    }
+		public Bitmap GetPage(int index)
+		{
+			return m_contents[index].GetPage();
+		}
+	}
 }

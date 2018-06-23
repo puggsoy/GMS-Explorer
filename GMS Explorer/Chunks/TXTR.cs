@@ -8,28 +8,28 @@ using System.IO;
 
 namespace GMS_Explorer
 {
-    class TXTR : ListChunk<Spritesheet>
-    {
-        public static void Load(BinaryReader br)
-        {
-            Instance = null;
+	class TXTR : ListChunk<Spritesheet>
+	{
+		public static void Load(BinaryReader br)
+		{
+			Instance = null;
 
-            long chunkOffset = br.FindChunk("TXTR");
-            br.Jump(chunkOffset);
+			long chunkOffset = br.FindChunk("TXTR");
+			br.Jump(chunkOffset);
 
-            Instance = new TXTR();
-            Instance.LoadData(br);
+			Instance = new TXTR();
+			Instance.LoadData(br);
 
-            br.JumpBack();
-        }
+			br.JumpBack();
+		}
 
-        public static TXTR Instance { get; private set; }
+		public static TXTR Instance { get; private set; }
 
-        private TXTR() {}
+		private TXTR() { }
 
-        public Bitmap GetBitmap(int index)
-        {
-            return m_contents[index].Image;
-        }
-    }
+		public Bitmap GetBitmap(int index)
+		{
+			return m_contents[index].Image;
+		}
+	}
 }
