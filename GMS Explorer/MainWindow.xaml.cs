@@ -11,13 +11,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.IO;
 using System.Drawing;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing.Imaging;
 using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace GMS_Explorer
 {
@@ -42,8 +42,6 @@ namespace GMS_Explorer
 
 		private void OpenFile(object sender, RoutedEventArgs e)
 		{
-			Console.WriteLine("FOO");
-
 			OpenFileDialog dialog = new OpenFileDialog
 			{
 				Title = "Select data.win to open",
@@ -57,9 +55,9 @@ namespace GMS_Explorer
 			Stream fs = null;
 
 			if (dialog.ShowDialog() == true)
-			{
 				fs = dialog.OpenFile();
-			}
+			else
+				return;
 
 			using (BinaryReader br = new BinaryReader(fs))
 			{
@@ -106,8 +104,6 @@ namespace GMS_Explorer
 			GameInfoText.Inlines.Add(new Run(g.BuildVersion + "\n"));
 			GameInfoText.Inlines.Add(new Bold(new Run("Release Version: ")));
 			GameInfoText.Inlines.Add(new Run(g.ReleaseVersion + "\n"));
-
-			fs.Close();
 		}
 
 		private void SpriteListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -196,6 +192,41 @@ namespace GMS_Explorer
 				MainImage.Source = bmpImage;
 				MainImage.Width = bmpImage.Width;
 				MainImage.Height = bmpImage.Height;
+			}
+		}
+
+		private void ExportBtn_Click(object sender, RoutedEventArgs e)
+		{
+			if (currentSelection == null)
+				return;
+
+			CommonOpenFileDialog dialog = new CommonOpenFileDialog
+			{
+				Title = "Select where to save extracted files",
+				IsFolderPicker = true,
+				EnsurePathExists = true
+			};
+
+			string outDir = null;
+			if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+				outDir = dialog.FileName;
+			else
+				return;
+
+			Sprite sprite = (Sprite)currentSelection.Asset;
+
+			outDir = Path.Combine(outDir, sprite.Name);
+			Directory.CreateDirectory(outDir);
+			Bitmap[] bmps = sprite.GetFrames();
+
+			for (int i = 0; i < bmps.Length; i++)
+			{
+				string outPath = Path.Combine(outDir, sprite.Name);
+				if (bmps.Length > 1)
+					outPath += "_" + (i + 1);
+
+				outPath = Path.ChangeExtension(outPath, "png");
+				bmps[i].Save(outPath, ImageFormat.Png);
 			}
 		}
 	}

@@ -34,9 +34,9 @@
         </Menu>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" MinWidth="150"/>
                 <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" MinWidth="393"/>
             </Grid.ColumnDefinitions>
             <!--Left side-->
             <Grid Grid.Column="0">
@@ -72,15 +72,21 @@
                 <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <Image x:Name="MainImage"/>
                 </ScrollViewer>
-                
+
                 <Grid x:Name="ControlPanel" Grid.Row="1" Visibility="Hidden">
-                    <Button x:Name="PrevBtn" Grid.Row="1" HorizontalAlignment="Center" Width="50" Height="30" Margin="0,0,75,15" VerticalAlignment="Bottom" Click="PrevBtn_Click">
+                    <Label x:Name="FrameLabel" Content="" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,15,0,0"/>
+                    <Button x:Name="PrevBtn" HorizontalAlignment="Center" Width="50" Height="30" Margin="0,0,75,15" VerticalAlignment="Bottom" Click="PrevBtn_Click">
                         <Image Source="Images/prev_icon.png"/>
                     </Button>
-                    <Button x:Name="NextBtn" Grid.Row="1" HorizontalAlignment="Center" Width="50" Height="30" Margin="75,0,0,15" VerticalAlignment="Bottom" Click="NextBtn_Click">
+                    <Button x:Name="NextBtn" HorizontalAlignment="Center" Width="50" Height="30" Margin="75,0,0,15" VerticalAlignment="Bottom" Click="NextBtn_Click">
                         <Image Source="Images/next_icon.png"/>
                     </Button>
-                    <Label x:Name="FrameLabel" Content="" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,15,0,0"/>
+                    <Button x:Name="ExportBtn" HorizontalAlignment="Center" Width="75" Height="30" VerticalAlignment="Bottom" Margin="0,0,250,15" Click="ExportBtn_Click">
+                        Export
+                    </Button>
+                    <Button x:Name="ImportBtn" HorizontalAlignment="Center" Width="75" Height="30" VerticalAlignment="Bottom" Margin="250,0,0,15" Visibility="Hidden">
+                        Import
+                    </Button>
                 </Grid>
             </Grid>
         </Grid>
