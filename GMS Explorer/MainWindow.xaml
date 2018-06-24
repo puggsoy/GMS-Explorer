@@ -29,7 +29,8 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_Open" Click="OpenFile"/>
+                <MenuItem Header="_Open" Click="Open_Click"/>
+                <MenuItem Header="_Export All Sprites" Click="ExportAllSprites_Click"/>
             </MenuItem>
         </Menu>
         <Grid>

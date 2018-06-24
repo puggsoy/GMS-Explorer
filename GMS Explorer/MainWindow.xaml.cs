@@ -40,7 +40,7 @@ namespace GMS_Explorer
 			InitializeComponent();
 		}
 
-		private void OpenFile(object sender, RoutedEventArgs e)
+		private void Open_Click(object sender, RoutedEventArgs e)
 		{
 			OpenFileDialog dialog = new OpenFileDialog
 			{
@@ -171,13 +171,13 @@ namespace GMS_Explorer
 				return;
 
 			Sprite sprite = (Sprite)currentSelection.Asset;
-			ApplyBmp(sprite.GetFrame(currentSpriteFrame));
+			DrawBmp(sprite.GetFrame(currentSpriteFrame));
 
 			ControlPanel.Visibility = Visibility.Visible;
 			FrameLabel.Content = string.Format("Frame {0}/{1}", currentSpriteFrame + 1, sprite.FrameNum);
 		}
 
-		private void ApplyBmp(Bitmap bmp)
+		private void DrawBmp(Bitmap bmp)
 		{
 			using (MemoryStream mem = new MemoryStream())
 			{
@@ -195,38 +195,81 @@ namespace GMS_Explorer
 			}
 		}
 
-		private void ExportBtn_Click(object sender, RoutedEventArgs e)
+		private async void ExportBtn_Click(object sender, RoutedEventArgs e)
 		{
 			if (currentSelection == null)
 				return;
 
-			CommonOpenFileDialog dialog = new CommonOpenFileDialog
-			{
-				Title = "Select where to save extracted files",
-				IsFolderPicker = true,
-				EnsurePathExists = true
-			};
-
-			string outDir = null;
-			if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-				outDir = dialog.FileName;
-			else
+			string outDir = OpenFolder("Select where to save extracted files");
+			if (outDir == null)
 				return;
 
 			Sprite sprite = (Sprite)currentSelection.Asset;
 
-			outDir = Path.Combine(outDir, sprite.Name);
-			Directory.CreateDirectory(outDir);
-			Bitmap[] bmps = sprite.GetFrames();
-
-			for (int i = 0; i < bmps.Length; i++)
+			ProgressWindow progressWindow = new ProgressWindow(sprite.FrameNum)
 			{
-				string outPath = Path.Combine(outDir, sprite.Name);
-				if (bmps.Length > 1)
-					outPath += "_" + (i + 1);
+				Title = "Exporting...",
+				Owner = GetWindow(this)
+			};
+			progressWindow.Show();
+			IProgress<double> progress = new Progress<double>(i => { progressWindow.IncrementProgress(i); });
 
-				outPath = Path.ChangeExtension(outPath, "png");
-				bmps[i].Save(outPath, ImageFormat.Png);
+			await sprite.ExportFrames(outDir, progress);
+
+			progressWindow.Close();
+		}
+
+		private async void ExportAllSprites_Click(object sender, RoutedEventArgs e)
+		{
+			if (SPRT.Instance == null)
+				return;
+
+			string outDir = OpenFolder("Select where to save extracted files");
+			if (outDir == null)
+				return;
+
+			List<Sprite> sprites = SPRT.Instance.Contents;
+
+			int frameNumTotal = 0;
+
+			for (int i = 0; i < sprites.Count; i++)
+			{
+				frameNumTotal += sprites[i].FrameNum;
+			}
+
+			ProgressWindow progressWindow = new ProgressWindow(frameNumTotal)
+			{
+				Title = "Exporting...",
+				Owner = GetWindow(this)
+			};
+			progressWindow.Show();
+			IProgress<double> progress = new Progress<double>(i => { progressWindow.IncrementProgress(i); });
+
+			await ExportSprites(sprites, outDir, progress);
+
+			progressWindow.Close();
+		}
+
+		private string OpenFolder(string title)
+		{
+			CommonOpenFileDialog dialog = new CommonOpenFileDialog
+			{
+				Title = title,
+				IsFolderPicker = true,
+				EnsurePathExists = true
+			};
+			
+			if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+				return dialog.FileName;
+
+			return null;
+		}
+
+		private async Task ExportSprites(List<Sprite> sprites, string outDir, IProgress<double> progress)
+		{
+			for (int i = 0; i < sprites.Count; i++)
+			{
+				await sprites[i].ExportFrames(outDir, progress);
 			}
 		}
 	}

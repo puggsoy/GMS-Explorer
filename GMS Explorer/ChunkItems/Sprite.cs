@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -73,6 +74,28 @@ namespace GMS_Explorer
 		public Bitmap GetFrame(int index)
 		{
 			return texturePages[index].GetPage();
+		}
+
+		public async Task ExportFrames(string outDir, IProgress<double> progress = null)
+		{
+			outDir = Path.Combine(outDir, Name);
+			Directory.CreateDirectory(outDir);
+
+			for (int i = 0; i < FrameNum; i++)
+			{
+				await Task.Run(() =>
+				{
+					string outPath = Path.Combine(outDir, Name);
+					if (FrameNum > 1)
+						outPath += "_" + (i + 1);
+					outPath = Path.ChangeExtension(outPath, "png");
+
+					GetFrame(i).Save(outPath, ImageFormat.Png);
+				});
+
+				if (progress != null)
+					progress.Report(1);
+			}
 		}
 	}
 }
