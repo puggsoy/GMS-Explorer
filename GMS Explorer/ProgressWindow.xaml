@@ -5,8 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GMS_Explorer"
         mc:Ignorable="d"
-        Title="ProgressWindow" Height="70" Width="300" ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True" WindowStartupLocation="CenterOwner" Loaded="OnLoaded">
+        Title="ProgressWindow" Height="100.83" Width="300" ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True" WindowStartupLocation="CenterOwner" Loaded="OnLoaded">
     <Grid>
-        <ProgressBar x:Name="PBar" Grid.ColumnSpan="2"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <ProgressBar x:Name="PBar" Grid.Row="0"/>
+        <Button x:Name="CancelBtn" Content="Cancel" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="73" Height="25" Click="CancelBtn_Click"/>
     </Grid>
 </Window>

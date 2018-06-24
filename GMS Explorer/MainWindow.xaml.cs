@@ -18,6 +18,7 @@ using System.ComponentModel;
 using System.Drawing.Imaging;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Threading;
 
 namespace GMS_Explorer
 {
@@ -214,7 +215,15 @@ namespace GMS_Explorer
 			progressWindow.Show();
 			IProgress<double> progress = new Progress<double>(i => { progressWindow.IncrementProgress(i); });
 
-			await sprite.ExportFrames(outDir, progress);
+			try
+			{
+				await sprite.ExportFrames(outDir, progressWindow.CancelToken, progress);
+			}
+			catch (OperationCanceledException)
+			{
+				// Cancelled
+				Console.WriteLine("successfully cancelled export!");
+			}
 
 			progressWindow.Close();
 		}
@@ -245,9 +254,25 @@ namespace GMS_Explorer
 			progressWindow.Show();
 			IProgress<double> progress = new Progress<double>(i => { progressWindow.IncrementProgress(i); });
 
-			await ExportSprites(sprites, outDir, progress);
+			try
+			{
+				await ExportSprites(sprites, outDir, progressWindow.CancelToken, progress);
+			}
+			catch (OperationCanceledException)
+			{
+				// Cancelled
+				Console.WriteLine("successfully cancelled exportall!");
+			}
 
 			progressWindow.Close();
+		}
+
+		private async Task ExportSprites(List<Sprite> sprites, string outDir, CancellationToken ct = default(CancellationToken), IProgress<double> progress = null)
+		{
+			for (int i = 0; i < sprites.Count; i++)
+			{
+				await sprites[i].ExportFrames(outDir, ct, progress);
+			}
 		}
 
 		private string OpenFolder(string title)
@@ -263,14 +288,6 @@ namespace GMS_Explorer
 				return dialog.FileName;
 
 			return null;
-		}
-
-		private async Task ExportSprites(List<Sprite> sprites, string outDir, IProgress<double> progress)
-		{
-			for (int i = 0; i < sprites.Count; i++)
-			{
-				await sprites[i].ExportFrames(outDir, progress);
-			}
 		}
 	}
 

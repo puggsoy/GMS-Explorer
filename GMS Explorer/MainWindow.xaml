@@ -82,12 +82,8 @@
                     <Button x:Name="NextBtn" HorizontalAlignment="Center" Width="50" Height="30" Margin="75,0,0,15" VerticalAlignment="Bottom" Click="NextBtn_Click">
                         <Image Source="Images/next_icon.png"/>
                     </Button>
-                    <Button x:Name="ExportBtn" HorizontalAlignment="Center" Width="75" Height="30" VerticalAlignment="Bottom" Margin="0,0,250,15" Click="ExportBtn_Click">
-                        Export
-                    </Button>
-                    <Button x:Name="ImportBtn" HorizontalAlignment="Center" Width="75" Height="30" VerticalAlignment="Bottom" Margin="250,0,0,15" Visibility="Hidden">
-                        Import
-                    </Button>
+                    <Button x:Name="ExportBtn" Content="Export" HorizontalAlignment="Center" Width="75" Height="30" VerticalAlignment="Bottom" Margin="0,0,250,15" Click="ExportBtn_Click"/>
+                    <Button x:Name="ImportBtn" Content="Import" HorizontalAlignment="Center" Width="75" Height="30" VerticalAlignment="Bottom" Margin="250,0,0,15" Visibility="Hidden"/>
                 </Grid>
             </Grid>
         </Grid>

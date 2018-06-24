@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,6 +22,10 @@ namespace GMS_Explorer
 	/// </summary>
 	public partial class ProgressWindow : Window
 	{
+		public CancellationToken CancelToken { get { return cts.Token; } }
+		private CancellationTokenSource cts;
+		
+
 		#region Remove Close Button
 		private const int GWL_STYLE = -16;
 		private const int WS_SYSMENU = 0x80000;
@@ -43,6 +48,8 @@ namespace GMS_Explorer
 			InitializeComponent();
 
 			PBar.Maximum = max;
+
+			cts = new CancellationTokenSource();
 		}
 
 		public void UpdateProgress(double amount)
@@ -53,6 +60,11 @@ namespace GMS_Explorer
 		public void IncrementProgress(double amount)
 		{
 			PBar.Value += amount;
+		}
+
+		private void CancelBtn_Click(object sender, RoutedEventArgs e)
+		{
+			cts.Cancel();
 		}
 	}
 }

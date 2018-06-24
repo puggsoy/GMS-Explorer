@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GMS_Explorer
@@ -76,7 +77,7 @@ namespace GMS_Explorer
 			return texturePages[index].GetPage();
 		}
 
-		public async Task ExportFrames(string outDir, IProgress<double> progress = null)
+		public async Task ExportFrames(string outDir, CancellationToken ct = default(CancellationToken), IProgress<double> progress = null)
 		{
 			outDir = Path.Combine(outDir, Name);
 			Directory.CreateDirectory(outDir);
@@ -95,6 +96,9 @@ namespace GMS_Explorer
 
 				if (progress != null)
 					progress.Report(1);
+
+				if (ct != CancellationToken.None)
+					ct.ThrowIfCancellationRequested();
 			}
 		}
 	}
