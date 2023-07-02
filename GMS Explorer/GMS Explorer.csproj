@@ -68,10 +68,18 @@
     <Compile Include="Chunks\BGND.cs" />
     <Compile Include="Chunks\GEN8.cs" />
     <Compile Include="Chunks\SPRT.cs" />
+    <Compile Include="ExceptionHandling\ExceptionWindow.xaml.cs">
+      <DependentUpon>ExceptionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ExceptionHandling\ExceptionWindowVM.cs" />
     <Compile Include="IChunkItem.cs" />
     <Compile Include="ChunkItems\Spritesheet.cs" />
     <Compile Include="Chunks\TPAG.cs" />
     <Compile Include="Chunks\TXTR.cs" />
+    <Page Include="ExceptionHandling\ExceptionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
