@@ -1,3 +1,5 @@
+# NOTICE: This project is currently on hiatus and is not actively being worked on. Reporting issues is welcome but there is not guarantee they will be addressed in a specific timeframe.
+
 # GMS Explorer
 GMS Explorer is a program to open, view, extract, and edit the contents of data.win files of Game Maker Studio games. This is intended to be a more full-featured successor to [GMExtract](https://github.com/puggsoy/GMExtract).
 
